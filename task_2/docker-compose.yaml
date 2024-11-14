@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+    networks:
+      - my-network
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.42.0
+    restart: always
+    ports:
+      - "8111:8080"
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: "hasura"
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_REDIS_URL: "redis://redis:6379"
+      HASURA_GRAPHQL_RATE_LIMIT_REDIS_URL: "redis://redis:6379"
+      PG_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+    volumes:
+      - hasura-metadata:/hasura-metadata
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+
+volumes:
+  db_data:
+  hasura-metadata:
+
+networks:
+  my-network:
+    driver: bridge
+

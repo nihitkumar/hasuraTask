@@ -1,0 +1,176 @@
+---
+resource_version: 30
+metadata:
+  version: 3
+  sources:
+  - name: default
+    kind: postgres
+    tables:
+    - table:
+        name: album
+        schema: public
+      object_relationships:
+      - name: artist
+        using:
+          foreign_key_constraint_on: artist_id
+      array_relationships:
+      - name: tracks
+        using:
+          foreign_key_constraint_on:
+            column: album_id
+            table:
+              name: track
+              schema: public
+    - table:
+        name: artist
+        schema: public
+      array_relationships:
+      - name: albums
+        using:
+          foreign_key_constraint_on:
+            column: artist_id
+            table:
+              name: album
+              schema: public
+    - table:
+        name: artist_5_albums
+        schema: public
+    - table:
+        name: customer
+        schema: public
+      object_relationships:
+      - name: employee
+        using:
+          foreign_key_constraint_on: support_rep_id
+      array_relationships:
+      - name: invoices
+        using:
+          foreign_key_constraint_on:
+            column: customer_id
+            table:
+              name: invoice
+              schema: public
+    - table:
+        name: employee
+        schema: public
+      object_relationships:
+      - name: employee
+        using:
+          foreign_key_constraint_on: reports_to
+      array_relationships:
+      - name: customers
+        using:
+          foreign_key_constraint_on:
+            column: support_rep_id
+            table:
+              name: customer
+              schema: public
+      - name: employees
+        using:
+          foreign_key_constraint_on:
+            column: reports_to
+            table:
+              name: employee
+              schema: public
+    - table:
+        name: genre
+        schema: public
+      array_relationships:
+      - name: tracks
+        using:
+          foreign_key_constraint_on:
+            column: genre_id
+            table:
+              name: track
+              schema: public
+    - table:
+        name: invoice
+        schema: public
+      object_relationships:
+      - name: customer
+        using:
+          foreign_key_constraint_on: customer_id
+      array_relationships:
+      - name: invoice_lines
+        using:
+          foreign_key_constraint_on:
+            column: invoice_id
+            table:
+              name: invoice_line
+              schema: public
+    - table:
+        name: invoice_line
+        schema: public
+      object_relationships:
+      - name: invoice
+        using:
+          foreign_key_constraint_on: invoice_id
+      - name: track
+        using:
+          foreign_key_constraint_on: track_id
+    - table:
+        name: media_type
+        schema: public
+      array_relationships:
+      - name: tracks
+        using:
+          foreign_key_constraint_on:
+            column: media_type_id
+            table:
+              name: track
+              schema: public
+    - table:
+        name: playlist
+        schema: public
+      array_relationships:
+      - name: playlist_tracks
+        using:
+          foreign_key_constraint_on:
+            column: playlist_id
+            table:
+              name: playlist_track
+              schema: public
+    - table:
+        name: playlist_track
+        schema: public
+      object_relationships:
+      - name: playlist
+        using:
+          foreign_key_constraint_on: playlist_id
+      - name: track
+        using:
+          foreign_key_constraint_on: track_id
+    - table:
+        name: track
+        schema: public
+      object_relationships:
+      - name: album
+        using:
+          foreign_key_constraint_on: album_id
+      - name: genre
+        using:
+          foreign_key_constraint_on: genre_id
+      - name: media_type
+        using:
+          foreign_key_constraint_on: media_type_id
+      array_relationships:
+      - name: invoice_lines
+        using:
+          foreign_key_constraint_on:
+            column: track_id
+            table:
+              name: invoice_line
+              schema: public
+      - name: playlist_tracks
+        using:
+          foreign_key_constraint_on:
+            column: track_id
+            table:
+              name: playlist_track
+              schema: public
+    configuration:
+      connection_info:
+        database_url: postgres://postgres:postgrespassword@postgres:5432/chinook
+        isolation_level: read-committed
+        use_prepared_statements: false
+
